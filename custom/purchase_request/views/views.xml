@@ -58,6 +58,16 @@
                                     </tree>
                                 </field>
                             </page>
+                            
+                             <!--Wizard of reject reason -->
+                            <page name="reject_reason" string="Reject Reason">
+                                  <field name="reject_reason_ids" readonly="1">
+                                    <tree>
+                                        <field name="wizard_reject_reason"/>
+                                    </tree>
+                                </field>
+
+                            </page>
                         </notebook>
 
                         <separator/>

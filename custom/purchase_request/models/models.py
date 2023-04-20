@@ -11,7 +11,8 @@ class PurchaseRequest(models.Model):
     date_start = fields.Date(string="Start Date", required=fields.Date.today)
     date_end = fields.Date(string="End Date")
     #reject_reason = fields.Text(string="Reject Reason", )
-    reject_reason_ids = fields.One2many(comodel_name="create.rejection.wizard", inverse_name="reject_reason_id", string="Rejection Reason",)
+    reject_reason_ids = fields.One2many(comodel_name="create.rejection.wizard",
+                                        inverse_name="wizard_reject_reason_id", string="Rejection Reason",)
     line_ids = fields.One2many("purchase.request.line", "purchase_request_id")
     total_cost = fields.Float(string="Total Price", required=True, compute="sum_totalcost",)
 
@@ -45,26 +46,6 @@ class PurchaseRequest(models.Model):
 
 
 
-     #wizard_form
-
-    def button_reject(self):
-
-        view_id = self.env.ref('purchase_request.form_rejection_wizard').id
-        return {
-            'name': _('Reject Purchase Request'),
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'view_type': 'form',
-            'res_model': 'purchase.request.wizard',
-            'views': [(view_id, 'form')],
-            'target': 'new',
-        }
-
-    def action_confirm_rejection(self):
-        # Set the rejection reason field and reject the purchase request
-        self.reject_reason_ids = self.env.context.get('reject_reason_id')
-        self.button_reject()
-
 
 
     @api.depends('line_ids')
@@ -80,6 +61,10 @@ class PurchaseRequest(models.Model):
             'email_from':self.env.user.email,
             'email_to': "esraa@gmailcom",
         })
+
+
+
+
 
 
 
