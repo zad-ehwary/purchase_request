@@ -64,6 +64,24 @@ class PurchaseRequest(models.Model):
 
 
 
+# Create Purchase Order
+    def button_create_po(self):
+        # print("order clicked")
+        if self.state != 'approved':
+            print("order clicked")
+            purchase_order = self.env['purchase.order'].create({
+                'partner_id': 5,
+                'order_line': [
+                    (0, 0, {
+                        'name': "test",
+                        'product_id': 5,
+                        'product_qty': 5,
+                        'price_unit': 5,
+
+                    })]
+            })
+
+
 
 
 
