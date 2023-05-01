@@ -20,6 +20,8 @@ class PurchaseRequest(models.Model):
     po_ids = fields.One2many(comodel_name="purchase.order", inverse_name="request_id", string="Orders", required=False,)
     partner_id = fields.Many2one(comodel_name="res.partner", string="vendor", required=False, )
 
+    # create smart button
+    count_po = fields.Integer(string="NumOfOrders", compute="count_orders")
 
     state = fields.Selection([
         ("draft", "Draft"),
@@ -88,6 +90,24 @@ class PurchaseRequest(models.Model):
                     'request_id': self.id,
                     'order_line': order_lines
                 })
+
+# count Number of order for each request using smart button
+    def count_orders(self):
+        # Loop through the records in the purchase request model
+        for record in self:
+            count_order = self.env['purchase.order'].search_count([('request_id', '=', record.id)])
+            record.count_po = count_order
+
+    def action_view_po(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Orders',
+            'res_model': 'purchase.order',
+            'view_mode': 'list,form',
+            'context': {},
+            'domain': [('request_id', '=', self.id)],
+            'target': 'current',
+        }
 
 
 

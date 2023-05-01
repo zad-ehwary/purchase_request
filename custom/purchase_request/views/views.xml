@@ -41,6 +41,14 @@
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
+ <!--                Smart Button : Shoe number of orders of purchase request                                                                      -->
+                        <div class="oe_button_box" name="button_box">
+                             <button name="action_view_po" type="object" class="oe_stat_button" icon="fa-star">
+                              <field name="count_po" widget="stateinfo"/>
+                              <span class="o_stat_value">Orders</span>
+                            </button>
+
+                        </div>
 
                         <group>
                             <group>
