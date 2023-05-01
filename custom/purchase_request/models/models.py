@@ -15,6 +15,11 @@ class PurchaseRequest(models.Model):
                                         inverse_name="wizard_reject_reason_id", string="Rejection Reason",)
     line_ids = fields.One2many("purchase.request.line", "purchase_request_id")
     total_cost = fields.Float(string="Total Price", required=True, compute="sum_totalcost",)
+    
+    #create purchase order
+    po_ids = fields.One2many(comodel_name="purchase.order", inverse_name="request_id", string="Orders", required=False,)
+    partner_id = fields.Many2one(comodel_name="res.partner", string="vendor", required=False, )
+
 
     state = fields.Selection([
         ("draft", "Draft"),
@@ -64,23 +69,25 @@ class PurchaseRequest(models.Model):
 
 
 
-# Create Purchase Order
+ # Create Purchase Order
     def button_create_po(self):
         # print("order clicked")
         if self.state != 'approved':
-            print("order clicked")
+            order_lines= []
+            for line in self.line_ids:
+                order_lines.append((0, 0, {
+                            'name': line.description,
+                            'product_id': line.product_id.id,
+                            'product_qty': line.quantity,
+                            'price_unit': line.cost_price,
+
+                        }))
+
             purchase_order = self.env['purchase.order'].create({
-                'partner_id': 5,
-                'order_line': [
-                    (0, 0, {
-                        'name': "test",
-                        'product_id': 5,
-                        'product_qty': 5,
-                        'price_unit': 5,
-
-                    })]
-            })
-
+                    'partner_id': self.partner_id.id,
+                    'request_id': self.id,
+                    'order_line': order_lines
+                })
 
 
 
